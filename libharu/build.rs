@@ -1,5 +1,5 @@
 extern crate pkg_config;
-extern crate gcc;
+extern crate cc;
 
 use std::path::Path;
 
@@ -11,13 +11,10 @@ fn main() {
     println!("cargo:include={}", root.join("include").into_os_string().into_string().unwrap());
     println!("cargo:src={}", root.join("lib").into_os_string().into_string().unwrap());
 
-    match pkg_config::find_library("haru") {
-        Ok(_) => return,
-        Err(..) => {}
-    };
+    if pkg_config::find_library("haru").is_ok() { return };
 
 
-    gcc::Build::new()
+    cc::Build::new()
                 .file("libharu/src/hpdf_3dmeasure.c")
                 .file("libharu/src/hpdf_annotation.c")
                 .file("libharu/src/hpdf_array.c")
