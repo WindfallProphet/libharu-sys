@@ -6,3 +6,4 @@ Cargo.lock
 **/*.pdf
 *.pdf
 /examples/personal*.rs
+/.vscode
