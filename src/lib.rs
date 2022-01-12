@@ -8,14 +8,14 @@ pub type   HPDF_UINT = libc::c_uint;
 
 /*  32bit integer types
  */
-pub type   HPDF_INT32 = libc::int32_t;
-pub type   HPDF_UINT32 = libc::uint32_t;
+pub type   HPDF_INT32 = i32;
+pub type   HPDF_UINT32 = u32;
 
 
 /*  16bit integer types
  */
-pub type   HPDF_INT16 = libc::int16_t;
-pub type   HPDF_UINT16 = libc::uint16_t;
+pub type   HPDF_INT16 = i16;
+pub type   HPDF_UINT16 = u16;
 
 
 /*  8bit integer types
@@ -46,7 +46,7 @@ pub type   HPDF_BOOL = libc::c_int;
 
 /*  error-no type (32bit unsigned integer)
  */
-pub type   HPDF_STATUS = libc::uint32_t;
+pub type   HPDF_STATUS = u32;
 
 
 /*  charactor-code type (16bit)
@@ -1147,10 +1147,19 @@ extern{
     pub fn HPDF_Free(pdf: HPDF_Doc)->libc::c_void;
 
     pub fn HPDF_SaveToFile(pdf: HPDF_Doc,
-                           file_name:  *const libc::c_char)->HPDF_STATUS;
+                           file_name:  *const libc::c_char) -> HPDF_STATUS;
+                           
+    pub fn HPDF_SaveToStream(pdf: HPDF_Doc) -> HPDF_STATUS;
 
+    pub fn HPDF_GetStreamSize(pdf: HPDF_Doc) -> HPDF_UINT32;
+ 
+    pub fn HPDF_ReadFromStream(pdf: HPDF_Doc,
+                                buf: *const HPDF_BYTE,
+                                size: HPDF_UINT32) -> HPDF_STATUS;
 
-
+    pub fn HPDF_SetInfoAttr(pdf: HPDF_Doc,
+                            into_type:  HPDF_InfoType,
+                            value: *const libc::c_char ) -> HPDF_STATUS;
 /*--- Text object operator -----------------------------------------------*/
 
 /* BT */
