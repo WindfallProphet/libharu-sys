@@ -55,10 +55,8 @@ fn print_grid  (pdf: HPDF_Doc,
             if y % 10.0 == 0.0{
                 HPDF_Page_SetLineWidth (page, 0.5);
             }
-            else {
-                if HPDF_Page_GetLineWidth (page) != 0.25{
-                    HPDF_Page_SetLineWidth (page, 0.25);
-                }
+            else if (HPDF_Page_GetLineWidth (page) - 0.25).abs() > std::f32::EPSILON {
+                HPDF_Page_SetLineWidth (page, 0.25);
             }
 
             HPDF_Page_MoveTo (page, 0.0, y);
@@ -85,10 +83,8 @@ fn print_grid  (pdf: HPDF_Doc,
             if x % 10.0 == 0.0 {
                 HPDF_Page_SetLineWidth (page, 0.5);
             }
-            else {
-                if HPDF_Page_GetLineWidth (page) != 0.25{
-                    HPDF_Page_SetLineWidth (page, 0.25);
-                }
+            else if (HPDF_Page_GetLineWidth (page) - 0.25).abs() > std::f32::EPSILON {
+                HPDF_Page_SetLineWidth (page, 0.25);
             }
 
             HPDF_Page_MoveTo (page, x, 0.0);
@@ -164,7 +160,7 @@ fn main ()
         let fname = cstring!("TEST.pdf");
 
         let pdf = HPDF_New (error_handler, ptr::null_mut());
-        if (pdf == ptr::null_mut()) {
+        if pdf.is_null() {
             println! ("error: cannot create PdfDoc object\n");
             return ;
         }
@@ -185,8 +181,6 @@ fn main ()
         /* clean up */
         HPDF_Free (pdf);
     }
-
-    return ;
 }
 
 

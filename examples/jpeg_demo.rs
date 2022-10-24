@@ -63,8 +63,8 @@ fn main ()
     unsafe{
         let fname = CString::new("TEST.pdf").unwrap();
 
-        let mut pdf = HPDF_New (error_handler, ptr::null_mut());
-        if (pdf == ptr::null_mut()) {
+        let pdf = HPDF_New (error_handler, ptr::null_mut());
+        if pdf.is_null() {
             println! ("error: cannot create PdfDoc object\n");
             panic!("")
         }
@@ -75,7 +75,7 @@ fn main ()
         let font = HPDF_GetFont (pdf, CString::new("Helvetica").unwrap().as_ptr(), ptr::null_mut());
 
         /* add a new page object. */
-        let mut page = HPDF_AddPage (pdf);
+        let page = HPDF_AddPage (pdf);
 
         HPDF_Page_SetWidth (page, 650.0);
         HPDF_Page_SetHeight (page, 500.0);

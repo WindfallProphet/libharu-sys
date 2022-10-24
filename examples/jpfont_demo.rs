@@ -40,7 +40,7 @@ fn main ()
 {
     unsafe{
         let mut detail_font = Vec::<HPDF_Font>::new();
-        let PAGE_HEIGHT = 210.0;
+        let page_height = 210.0;
 
         let mut contents = Vec::new();
         let mut contents_length :i32 = 0;
@@ -55,7 +55,7 @@ fn main ()
         let fname = cstring!("TEST.pdf");
         
         let pdf = HPDF_New (error_handler, ptr::null_mut());
-        if (pdf == ptr::null_mut()) {
+        if pdf.is_null() {
             println! ("error: cannot create PdfDoc object\n");
             return ;
         }
@@ -94,14 +94,14 @@ fn main ()
         let root = HPDF_CreateOutline (pdf, ptr::null_mut(), cstring!("JP font demo").as_ptr(), ptr::null_mut());
         HPDF_Outline_SetOpened (root, HPDF_TRUE);
 
-        for i in 0..15{
+        for font in detail_font.iter().take(15){
 
             /* add a new page object. */
             let page = HPDF_AddPage (pdf);
 
             /* create outline entry */
             let outline = HPDF_CreateOutline (pdf, root,
-                    HPDF_Font_GetFontName (detail_font[i]), ptr::null_mut());
+                    HPDF_Font_GetFontName (*font), ptr::null_mut());
             let dst = HPDF_Page_CreateDestination (page);
             HPDF_Outline_SetDestination(outline, dst);
 
@@ -112,9 +112,9 @@ fn main ()
 
             /* move the position of the text to top of the page. */
             HPDF_Page_MoveTextPos(page, 10.0, 190.0);
-            HPDF_Page_ShowText (page, HPDF_Font_GetFontName (detail_font[i]));
+            HPDF_Page_ShowText (page, HPDF_Font_GetFontName (*font));
 
-            HPDF_Page_SetFontAndSize (page, detail_font[i], 15.0);
+            HPDF_Page_SetFontAndSize (page, *font, 15.0);
             HPDF_Page_MoveTextPos (page, 10.0, -20.0);
             HPDF_Page_ShowText (page, cstring!("abcdefghijklmnopqrstuvwxyz").as_ptr());
             HPDF_Page_MoveTextPos (page, 0.0, -20.0);
@@ -123,22 +123,22 @@ fn main ()
             HPDF_Page_ShowText (page, cstring!("1234567890").as_ptr());
             HPDF_Page_MoveTextPos (page, 0.0, -20.0);
 
-            HPDF_Page_SetFontAndSize (page, detail_font[i], 10.0);
+            HPDF_Page_SetFontAndSize (page, *font, 10.0);
             HPDF_Page_ShowText (page, samp_text.as_ptr());
             HPDF_Page_MoveTextPos (page, 0.0, -18.0);
 
-            HPDF_Page_SetFontAndSize (page, detail_font[i], 16.0);
+            HPDF_Page_SetFontAndSize (page, *font, 16.0);
             HPDF_Page_ShowText (page, samp_text.as_ptr());
             HPDF_Page_MoveTextPos (page, 0.0, -27.0);
 
-            HPDF_Page_SetFontAndSize (page, detail_font[i], 23.0);
+            HPDF_Page_SetFontAndSize (page, *font, 23.0);
             HPDF_Page_ShowText (page, samp_text.as_ptr());
             HPDF_Page_MoveTextPos (page, 0.0, -36.0);
 
-            HPDF_Page_SetFontAndSize (page, detail_font[i], 30.0);
+            HPDF_Page_SetFontAndSize (page, *font, 30.0);
             HPDF_Page_ShowText (page, samp_text.as_ptr());
 
-            let mut p = HPDF_Page_GetCurrentTextPos (page);
+            let p = HPDF_Page_GetCurrentTextPos (page);
 
             /* finish to print text. */
             HPDF_Page_EndText (page);
@@ -150,18 +150,18 @@ fn main ()
                 HPDF_Page_MoveTo (page, x_pos, p.y - 10.0);
                 HPDF_Page_LineTo (page, x_pos, p.y - 12.0);
                 HPDF_Page_Stroke (page);
-                x_pos = x_pos + 30.0;
+                x_pos += 30.0;
             }
 
             HPDF_Page_SetWidth (page, p.x + 20.0);
-            HPDF_Page_SetHeight (page, PAGE_HEIGHT);
+            HPDF_Page_SetHeight (page, page_height);
 
-            HPDF_Page_MoveTo (page, 10.0, PAGE_HEIGHT - 25.0);
-            HPDF_Page_LineTo (page, p.x + 10.0, PAGE_HEIGHT - 25.0);
+            HPDF_Page_MoveTo (page, 10.0, page_height - 25.0);
+            HPDF_Page_LineTo (page, p.x + 10.0, page_height - 25.0);
             HPDF_Page_Stroke (page);
 
-            HPDF_Page_MoveTo (page, 10.0, PAGE_HEIGHT - 85.0);
-            HPDF_Page_LineTo (page, p.x + 10.0, PAGE_HEIGHT - 85.0);
+            HPDF_Page_MoveTo (page, 10.0, page_height - 85.0);
+            HPDF_Page_LineTo (page, p.x + 10.0, page_height - 85.0);
             HPDF_Page_Stroke (page);
 
             HPDF_Page_MoveTo (page, 10.0, p.y - 12.0);
@@ -174,6 +174,5 @@ fn main ()
         /* clean up */
         HPDF_Free (pdf);
     }
-    return ;
 }
 

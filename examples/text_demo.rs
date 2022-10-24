@@ -91,9 +91,9 @@ fn main()->()
 
 
         let pdf = HPDF_New (error_handler, ptr::null_mut());
-        if (pdf == ptr::null_mut()) {
+        if pdf.is_null() {
             println!("error: cannot create PdfDoc object");
-            return ();
+            return ;
         }
 
 
@@ -285,7 +285,7 @@ fn main()->()
          * Rotating text
          */
         angle1 = 30.0;                   /* A rotation of 30 degrees. */
-        rad1 = angle1 / 180.0 * 3.141592; /* Calcurate the radian value. */
+        rad1 = angle1 / 180.0 * std::f32::consts::PI; /* Calcurate the radian value. */
 
         show_description (page, 320.0, ypos - 60.0, CString::new("Rotating text").unwrap().as_ptr());
         HPDF_Page_BeginText (page);
@@ -303,8 +303,8 @@ fn main()->()
 
         angle1 = 10.0;
         angle2 = 20.0;
-        rad1 = angle1 / 180.0 * 3.141592;
-        rad2 = angle2 / 180.0 * 3.141592;
+        rad1 = angle1 / 180.0 * std::f32::consts::PI;
+        rad2 = angle2 / 180.0 * std::f32::consts::PI;
 
         HPDF_Page_SetTextMatrix (page, 1.0, rad1.tan(), rad2.tan(), 1.0, 320.0, ypos - 120.0);
         HPDF_Page_ShowText (page, CString::new("ABCabc123").unwrap().as_ptr());
