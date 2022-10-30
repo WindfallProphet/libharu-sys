@@ -231,7 +231,7 @@ HPDF_Stream_ReadLn  (HPDF_Stream  stream,
  *  ptr : Pointer to a buffer to write.
  *  siz : The size of buffer to write.
  *
- *  HPDF_Stream_Write returns HPDF_OK when success. On failer, it returns
+ *  HPDF_Stream_Write returns HPDF_OK when success. On failure, it returns
  *  error-code returned by writing function of this stream.
  *
  */
