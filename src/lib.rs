@@ -22,7 +22,7 @@ pub type HPDF_UINT8 = libc::c_uchar;
 
 /*  8bit binary types
  */
-pub type HPDF_BYTE = libc::c_uchar;
+pub type HPDF_BYTE = [libc::c_uchar];
 
 /*  float type (32bit IEEE754)
  */
