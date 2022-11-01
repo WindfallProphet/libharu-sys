@@ -1103,7 +1103,7 @@ extern "C" {
     pub fn HPDF_SaveToStream(pdf: HPDF_Doc) -> HPDF_STATUS;
 
     pub fn HPDF_GetStreamSize(pdf: HPDF_Doc) -> HPDF_UINT32;
-
+    pub fn HPDF_ResetStream(pdf: HPDF_Doc) -> HPDF_STATUS;
     pub fn HPDF_ReadFromStream(
         pdf: HPDF_Doc,
         buf: *const HPDF_BYTE,
