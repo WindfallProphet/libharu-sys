@@ -1107,9 +1107,9 @@ extern "C" {
     pub fn HPDF_ReadFromStream(
         pdf: HPDF_Doc,
         buf: *mut HPDF_BYTE,
-        size: *const HPDF_UINT32,
+        size: *mut HPDF_UINT32,
     ) -> HPDF_STATUS;
-    pub fn HPDF_GetContents(pdf: HPDF_Doc, buf: *mut HPDF_BYTE, size: *const HPDF_UINT32)
+    pub fn HPDF_GetContents(pdf: HPDF_Doc, buf: *mut HPDF_BYTE, size: *mut HPDF_UINT32)
         -> HPDF_STATUS;
     pub fn HPDF_FileWriter_New(mmgr: HPDF_MMgr, name: *const libc::c_char) -> HPDF_Stream;
     pub fn HPDF_SetInfoAttr(
