@@ -55,7 +55,7 @@ typedef struct tableentry {
  *     during state generation (see mkg3states.c).
  */
 #ifdef G3CODES
-const tableentry HPDF_TIFFFaxWhiteCodes[] = {
+const tableentry TIFFFaxWhiteCodes[] = {
     { 8, 0x35, 0 },	/* 0011 0101 */
     { 6, 0x7, 1 },	/* 0001 11 */
     { 4, 0x7, 2 },	/* 0111 */
@@ -167,7 +167,7 @@ const tableentry HPDF_TIFFFaxWhiteCodes[] = {
     { 12, 0x0, G3CODE_INVALID },	/* 0000 0000 0000 */
 };
 
-const tableentry HPDF_TIFFFaxBlackCodes[] = {
+const tableentry TIFFFaxBlackCodes[] = {
     { 10, 0x37, 0 },	/* 0000 1101 11 */
     { 3, 0x2, 1 },	/* 010 */
     { 2, 0x3, 2 },	/* 11 */
@@ -281,7 +281,5 @@ const tableentry HPDF_TIFFFaxBlackCodes[] = {
 #else
 extern	const tableentry TIFFFaxWhiteCodes[];
 extern	const tableentry TIFFFaxBlackCodes[];
-const tableentry *HPDF_TIFFFaxWhiteCodes = TIFFFaxWhiteCodes;
-const tableentry *HPDF_TIFFFaxBlackCodes = TIFFFaxBlackCodes;
 #endif
 #endif /* _T4_ */

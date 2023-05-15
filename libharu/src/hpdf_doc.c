@@ -17,14 +17,12 @@
 
 
 #include "hpdf_conf.h"
-#include "hpdf_config.h"
 #include "hpdf_utils.h"
 #include "hpdf_encryptdict.h"
 #include "hpdf_namedict.h"
 #include "hpdf_destination.h"
 #include "hpdf_info.h"
 #include "hpdf_page_label.h"
-#include "hpdf_version.h"
 #include "hpdf.h"
 
 
@@ -123,13 +121,6 @@ HPDF_HasDoc  (HPDF_Doc  pdf)
         return HPDF_TRUE;
 }
 
-HPDF_EXPORT(HPDF_MMgr)
-HPDF_GetDocMMgr  (HPDF_Doc doc)
-{
-    HPDF_PTRACE ((" HPDF_GetDocMMgr\n"));
-
-    return doc->mmgr;
-}
 
 HPDF_EXPORT(HPDF_Doc)
 HPDF_New  (HPDF_Error_Handler    user_error_fn,
@@ -621,7 +612,7 @@ InternalSaveToStream  (HPDF_Doc      pdf,
     if ((ret = PrepareTrailer (pdf)) != HPDF_OK)
         return ret;
 
-    /* prepare encryption */
+    /* prepare encription */
     if (pdf->encrypt_on) {
         HPDF_Encrypt e= HPDF_EncryptDict_GetAttr (pdf->encrypt_dict);
 
@@ -1494,6 +1485,41 @@ HPDF_GetTTFontDefFromFile (HPDF_Doc      pdf,
 	return def;
 }
 
+
+//NOTE Added by Thoth Gunter
+//Taken from https://github.com/libharu/libharu/pull/44/commits/e011b10c660d9f6f4e6a48c45c5434861ae7726d
+HPDF_EXPORT(const char *)
+HPDF_LoadTTFontFromMemory (HPDF_Doc       pdf,
+                   const HPDF_BYTE       *buffer,
+                         HPDF_UINT        size,
+                         HPDF_BOOL        embedding)
+{
+    HPDF_Stream font_data;
+    const char *ret;
+     HPDF_PTRACE ((" HPDF_LoadTTFontFromMemory\n"));
+     if (!HPDF_HasDoc (pdf))
+        return NULL;
+     /* create memory stream */
+    font_data = HPDF_MemStream_New (pdf->mmgr, size);
+    if (!HPDF_Stream_Validate (font_data)) {
+        HPDF_RaiseError (&pdf->error, HPDF_INVALID_STREAM, 0);
+        return NULL;
+    }
+     if (HPDF_Stream_Write (font_data, buffer, size) != HPDF_OK) {
+        HPDF_Stream_Free (font_data);
+        return NULL;
+    }
+    ret = LoadTTFontFromStream (pdf, font_data, embedding, "");
+
+    if (!ret) {
+        HPDF_CheckError(&pdf->error);
+    }
+
+    return ret;
+}
+
+
+
 HPDF_EXPORT(const char*)
 HPDF_LoadTTFontFromFile (HPDF_Doc         pdf,
                          const char      *file_name,
@@ -2136,16 +2162,16 @@ HPDF_SetCompressionMode  (HPDF_Doc    pdf,
     if (mode != (mode & HPDF_COMP_MASK))
         return HPDF_RaiseError (&pdf->error, HPDF_INVALID_COMPRESSION_MODE, 0);
 
-#ifdef LIBHPDF_HAVE_ZLIB
+#ifndef LIBHPDF_HAVE_NOZLIB
     pdf->compression_mode = mode;
 
     return HPDF_OK;
 
-#else /* LIBHPDF_HAVE_ZLIB */
+#else /* LIBHPDF_HAVE_NOZLIB */
 
     return HPDF_INVALID_COMPRESSION_MODE;
 
-#endif /* LIBHPDF_HAVE_ZLIB */
+#endif /* LIBHPDF_HAVE_NOZLIB */
 }
 
 

@@ -177,10 +177,10 @@ HPDF_Dict_Write  (HPDF_Dict     dict,
 
             HPDF_Array_Clear (array);
 
-#ifdef LIBHPDF_HAVE_ZLIB
+#ifndef LIBHPDF_HAVE_NOZLIB
             if (dict->filter & HPDF_STREAM_FILTER_FLATE_DECODE)
                 HPDF_Array_AddName (array, "FlateDecode");
-#endif /* LIBHPDF_HAVE_ZLIB */
+#endif /* LIBHPDF_HAVE_NOZLIB */
 
             if (dict->filter & HPDF_STREAM_FILTER_DCT_DECODE)
                 HPDF_Array_AddName (array, "DCTDecode");

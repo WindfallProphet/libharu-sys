@@ -30,10 +30,15 @@
 #include "hpdf_utils.h"
 #include "hpdf_streams.h"
 
-#ifdef LIBHPDF_HAVE_ZLIB
-#include <zlib.h>
-#include <zconf.h>
-#endif /* LIBHPDF_HAVE_ZLIB */
+#ifndef LIBHPDF_HAVE_NOZLIB
+//NOTE: Thoth Gunter Aug 17, 2018
+//miniz is zlib replacement used to remove external zlib dependency.
+//this was no implemented by the original authors of libharu.
+//The change was made to simplify compliation when binding to rust.
+#include <miniz.h>
+//#include <zlib.h>
+//#include <zconf.h>
+#endif /* LIBHPDF_HAVE_NOZLIB */
 
 HPDF_STATUS
 HPDF_MemStream_WriteFunc  (HPDF_Stream      stream,
@@ -112,7 +117,7 @@ HPDF_FileStream_FreeFunc  (HPDF_Stream  stream);
  *  ptr : Pointer to a buffer to copy read data.
  *  size : Pointer to a variable which indecates buffer size.
  *
- *  HPDF_Stream_read returns HPDF_OK when success. On failure, it returns
+ *  HPDF_Stream_read returns HPDF_OK when success. On failer, it returns
  *  error-code returned by reading function of this stream.
  *
  */
@@ -141,7 +146,7 @@ HPDF_Stream_Read  (HPDF_Stream  stream,
  *  s : Pointer to a buffer to copy read data.
  *  size : buffer-size of s.
  *
- *  Read from stream until the buffer is exhausted or line-feed character is
+ *  Read from stream until the buffer is exhausted or line-feed charactor is
  *  read.
  *
  */
@@ -562,7 +567,7 @@ HPDF_Stream_WriteToStreamWithDeflate  (HPDF_Stream  src,
                                        HPDF_Stream  dst,
                                        HPDF_Encrypt  e)
 {
-#ifdef LIBHPDF_HAVE_ZLIB
+#ifndef LIBHPDF_HAVE_NOZLIB
 
 #define DEFLATE_BUF_SIZ  ((HPDF_INT)(HPDF_STREAM_BUF_SIZ * 1.1) + 13)
 
@@ -586,8 +591,9 @@ HPDF_Stream_WriteToStreamWithDeflate  (HPDF_Stream  src,
     strm.next_out = otbuf;
     strm.avail_out = DEFLATE_BUF_SIZ;
 
-    ret = deflateInit_(&strm, Z_DEFAULT_COMPRESSION, ZLIB_VERSION,
-            sizeof(z_stream));
+    ret = deflateInit(&strm, Z_DEFAULT_COMPRESSION);
+    //ret = deflateInit_(&strm, Z_DEFAULT_COMPRESSION, ZLIB_VERSION,
+    //        sizeof(z_stream));
     if (ret != Z_OK)
         return HPDF_SetError (src->error, HPDF_ZLIB_ERROR, ret);
 
@@ -676,12 +682,12 @@ HPDF_Stream_WriteToStreamWithDeflate  (HPDF_Stream  src,
 
     deflateEnd(&strm);
     return HPDF_OK;
-#else /* LIBHPDF_HAVE_ZLIB */
+#else /* LIBHPDF_HAVE_NOZLIB */
     HPDF_UNUSED (e);
     HPDF_UNUSED (dst);
     HPDF_UNUSED (src);
     return HPDF_UNSUPPORTED_FUNC;
-#endif /* LIBHPDF_HAVE_ZLIB */
+#endif /* LIBHPDF_HAVE_NOZLIB */
 }
 
 HPDF_STATUS
@@ -711,10 +717,10 @@ HPDF_Stream_WriteToStream  (HPDF_Stream  src,
     if (HPDF_Stream_Size (src) == 0)
         return HPDF_OK;
 
-#ifdef LIBHPDF_HAVE_ZLIB
+#ifndef LIBHPDF_HAVE_NOZLIB
     if (filter & HPDF_STREAM_FILTER_FLATE_DECODE)
         return HPDF_Stream_WriteToStreamWithDeflate (src, dst, e);
-#endif /* LIBHPDF_HAVE_ZLIB */
+#endif /* LIBHPDF_HAVE_NOZLIB */
 
     ret = HPDF_Stream_Seek (src, 0, HPDF_SEEK_SET);
     if (ret != HPDF_OK)
@@ -836,7 +842,7 @@ HPDF_FileReader_ReadFunc  (HPDF_Stream  stream,
  *                     HPDF_SEEK_CUR : Relative to the current file position
  *                     HPDF_SEEK_END : Relative to the current end of file.
  *
- *  HPDF_FileReader_seek_fn returns HPDF_OK when successful. On failure
+ *  HPDF_FileReader_seek_fn returns HPDF_OK when successful. On failer
  *  the result is HPDF_FILE_IO_ERROR and HPDF_Error_GetCode2() returns the
  *  error which returned by file seeking function of platform.
  *
@@ -1375,7 +1381,7 @@ HPDF_MemStream_Rewrite  (HPDF_Stream  stream,
 /*
  *  HPDF_CallbackReader_new
  *
- *  Constructor for HPDF_CallbackReader.
+ *  Constractor for HPDF_CallbackReader.
  *
  *  mmgr : Pointer to a HPDF_MMgr object.
  *  read_fn : Pointer to a user function for reading data.
@@ -1421,7 +1427,7 @@ HPDF_CallbackReader_New  (HPDF_MMgr              mmgr,
 /*
  *  HPDF_CallbackWriter_new
  *
- *  Constructor for HPDF_CallbackWriter.
+ *  Constractor for HPDF_CallbackWriter.
  *
  *  mmgr : Pointer to a HPDF_MMgr object.
  *  read_fn : Pointer to a user function for writing data.

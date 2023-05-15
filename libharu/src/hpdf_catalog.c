@@ -58,7 +58,7 @@ HPDF_Catalog_New  (HPDF_MMgr  mmgr,
     if (HPDF_Xref_Add (xref, catalog) != HPDF_OK)
         return NULL;
 
-    /* add required elements */
+    /* add requiered elements */
     ret += HPDF_Dict_AddName (catalog, "Type", "Catalog");
     ret += HPDF_Dict_Add (catalog, "Pages", HPDF_Pages_New (mmgr, NULL, xref));
 
