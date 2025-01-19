@@ -12,12 +12,12 @@ exclude = ["examples/*"]
 
 
 [dev-dependencies]
-image = "0.19.0"
+image = "0.25.5"
 
 
 [dependencies]
-libc = "0.2.42"
+libc = "0.2.169"
 
 [build-dependencies]
-cc = "1.0"
-pkg-config = "0.3"
+cc = "1.2.10"
+pkg-config = "0.3.31"
