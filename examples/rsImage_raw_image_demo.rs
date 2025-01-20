@@ -50,7 +50,7 @@ fn main () -> ()
 
         let img = image::open(&Path::new("examples/images/PNG_trans_1.png")).unwrap();
         println!("{:?}", img.color());
-        let img = img.to_rgba();
+        let img = img.to_rgba8();
         let mut img_buff = Vec::<u8>::new();
         for pixel in img.pixels(){
             let rgba = pixel;
