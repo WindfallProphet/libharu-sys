@@ -14,13 +14,12 @@
 
 //Original C file altered by Thoth Gunter to port to Rust
 
-
-
-extern crate libharu_rs;
+extern crate libharu_sys;
 extern crate libc;
 use std::ptr;
 use std::ffi::CString;
-use libharu_rs::*;
+use std::f32::consts::PI;
+use libharu_sys::*;
 
 extern fn error_handler  (error_no: HPDF_STATUS,
                 detail_no: HPDF_STATUS,
@@ -161,8 +160,8 @@ fn main ()->()
 
         angle1 = 5.0;
         angle2 = 10.0;
-        rad1 = angle1 / 180.0 * 3.141592;
-        rad2 = angle2 / 180.0 * 3.141592;
+        rad1 = angle1 / 180.0 * PI;
+        rad2 = angle2 / 180.0 * PI;
 
         HPDF_Page_Concat (page, 1.0, rad1.tan(), rad2.tan(), 1.0, 25.0, 350.0);
         rect.left = 0.0;
@@ -192,7 +191,7 @@ fn main ()->()
         HPDF_Page_GSave (page);
 
         angle1 = 5.0;
-        rad1 = angle1 / 180.0 * 3.141592;
+        rad1 = angle1 / 180.0 * PI;
 
         HPDF_Page_Concat (page, rad1.cos(), rad1.sin(), -rad1.sin(), rad1.cos(), 220.0, 350.0);
         rect.left = 0.0;
@@ -236,8 +235,8 @@ fn main ()->()
             let mut x: f32;
             let mut y: f32;
 
-            rad1 = (angle2 - 90.0) / 180.0 * 3.141592;
-            rad2 = angle2 / 180.0 * 3.141592;
+            rad1 = (angle2 - 90.0) / 180.0 * PI;
+            rad2 = angle2 / 180.0 * PI;
 
             x = 210.0 + rad2.cos() * 122.0;
             y = 190.0 + rad2.sin() * 122.0;
